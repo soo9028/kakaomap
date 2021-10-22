@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>webworker</title>
+
+        <script>
+            function clickBtn(){
+                var n = 0;
+                while(true){
+                    n++;
+                    document.getElementById('hh').innerHTML=n;
+
+                    //메인스레드가 반복문을 처리하느라고 화면에 그려낼 시간조차 없음 . - 메인스레드가 어떤작업도 할 수 없음. ANR에러
+
+                }
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <!-- 무한반복문으로 카운트하는 버튼 (워커 없이 처리 - 에러(렉))-->
+        <button onclick="clickBtn()">무한 반복!</button>
+        <hr>
+        <h2 id="hh">결과</h2>
+        <hr>
+        <button onclick="clickBtn2()">start worker</button>
+        <button onclick="clickBtn3()">start worker</button>
+
+        <button onclick = "alert('clicked!!')"></button>
+
+        <script>
+            function clickBtn2(){
+                //Worker객체 생성
+                if(w==undefined){
+                    //워커는 객체를 만들면 자동작업을 시작함
+                w = new Worker('./worker.js');
+
+                //자종발동하는 콜백 메소드를 지정
+                w.onmessage= function(message){
+                    document.getElementById('hh').innerHTML = message.data;
+
+                }
+
+                }else{
+                    alert('이미 워커가 존재함');
+                }
+            }
+
+            function clickBtn3(){
+                w.terminate();
+                w = undefined;
+            }
+        </script>
+    </body>
+</html>
